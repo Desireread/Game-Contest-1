@@ -15,9 +15,17 @@ compDeck DWORD 10 DUP(?)
 
 
 .code
-; Randomly assign cards to eack deck
-
+; Randomly assign cards to each deck
+call Randomize
+mov eax, 52
+call RandomRange
 ; Shuffle and deal
 
 ; Create a loop for the game
   ; 
+
+;Add a procedure for go fish
+
+;Add a procedure for "I declare war"
+
+;Add a procedure for blackjack
