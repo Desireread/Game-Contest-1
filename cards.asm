@@ -5,6 +5,24 @@
 .model flat, stdcall
 Include Irvine32.inc
 
+
+;Macro to randomly assign nunCards amount of cards to a given deck
+shuffle MACRO givenDeck, numCards
+  mov ecx, 0                  ;Count number of cards in player's deck
+  mov edx, 52                 ;Count number of cards left in regular deck
+  addCards:                    
+    call Randomize            ;Get a random card from deck using randomize to get a random number
+    mov eax, edx
+    call RandomRange
+    mov ebx, deck[eax*4]      ;Move random card to ebx
+    mov givenDeck[ecx*4], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
+    ;Input operation to remove card from deck
+    add ecx                   ;increment ecx (number of cards in given deck)
+    cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
+    jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
+    sub edx                   ;subtract the amount of cards that are in deck
+ENDM
+
 .data
 ; Create list containing cards
 deck DWORD '1h', '2h', '3h','4h','5h','6h','7h','8h','9h','10h','jh','qh','kh','ah','1d','2d','3d','4d','5d','6d','7d','8d','9d','10d','jd','qd','kd','ad','1c','2c','3c','4c','5c','6c','7c','8c','9c','10c','jc','qc','kc','ac','1s','2s','3s','4s','5s','6s','7s','8s','9s','10s','js','qs','ks','as'
@@ -12,6 +30,8 @@ deck DWORD '1h', '2h', '3h','4h','5h','6h','7h','8h','9h','10h','jh','qh','kh','
 playerDeck DWORD 10 DUP(?)
 ; Create list for computer deck
 compDeck DWORD 10 DUP(?)
+
+
 
 
 .code
@@ -29,3 +49,6 @@ call RandomRange
 ;Add a procedure for "I declare war"
 
 ;Add a procedure for blackjack
+
+;Procedure for checking a value
+checkValue Proc
