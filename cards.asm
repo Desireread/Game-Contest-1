@@ -9,7 +9,7 @@ Include Irvine32.inc
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   mov ecx, 0                  ;Count number of cards in player's deck
-  mov edx, 52                 ;Count number of cards left in regular deck
+  mov edx, 50                 ;Count number of cards left in regular deck
   addCards:                    
     call Randomize            ;Get a random card from deck using randomize to get a random number
     mov eax, edx
@@ -68,16 +68,18 @@ ENDM
 ; Create list containing cards
 deck DWORD '1h', '2h', '3h','4h','5h','6h','7h','8h','9h','10h','jh','qh','kh','ah','1d','2d','3d','4d','5d','6d','7d','8d','9d','10d','jd','qd','kd','ad','1c','2c','3c','4c','5c','6c','7c','8c','9c','10c','jc','qc','kc','ac','1s','2s','3s','4s','5s','6s','7s','8s','9s','10s','js','qs','ks','as'
 ; Create list for player deck
-playerDeck DWORD 52 DUP(?)
+playerDeck DWORD 50 DUP(?)
 ; Create list for computer deck
-compDeck DWORD 52 DUP(?)
+compDeck DWORD 50 DUP(?)
+cardSearch DWORD "What number do you want to look for?"             ;Prompt for GOFish player
+inputReminder "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a"
 
 
 .code
 
 ;Add a procedure for "I declare war"
-shuffle playerDeck, 26
-shuffle, compDeck, 26
+shuffle playerDeck, 25
+shuffle, compDeck, 25
 
 
 ;Add a procedure for go fish
@@ -85,8 +87,15 @@ shuffle playerDeck, 7
 shuffle compDeck, 7
 
 ;Print deck to the board (macro?)
-
+printDeck playerDeck, 7
 ;Player types in the number they are looking for
+mov edx, inputReminder
+call WriteString
+call crlf
+mov edx, cardSearch
+call WriteString
+
+
 
 ;Computer either hadns over cards or says go fish
   ;Function checks all elements in computer deck and hands over cards or says go fish
