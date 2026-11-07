@@ -17,6 +17,7 @@ shuffle MACRO givenDeck, numCards
     mov ebx, deck[eax*4]      ;Move random card to ebx
     mov givenDeck[ecx*4], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
     ;Input operation to remove card from deck
+    removeCard deck, eax
     add ecx                   ;increment ecx (number of cards in given deck)
     cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
     jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
@@ -36,6 +37,18 @@ removeCards MACRO givenDeck, addr        ;Define the macro
     jmp delete                           ;Jump back to the beginning of the loop
   end:
     mov givenDeck[eax*4], ' '            ;Assign an empty value to the last element
+ENDM
+
+;Check the amount of elements in an array
+deckSize givenDeck
+  mov ecx, 0                             ;Start at 0
+  checkSize:                             ;Loop to check how many elements are in the array
+    mov edx, [givenDeck[ecx*4]]          ;Assign the element int he current address to edx
+    cmp edx, ' '                         ;Check if the current element is "emtpy"
+    jne end                              ;Jump out of th eloop is the elemnt is empty
+    add ecx                              ;Increase the number of elemnts found in the deck
+    jmp checkSize                        ;jump to beginning  of loop
+  end:
 ENDM
 
 .data
