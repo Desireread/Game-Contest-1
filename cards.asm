@@ -23,6 +23,21 @@ shuffle MACRO givenDeck, numCards
     sub edx                   ;subtract the amount of cards that are in deck
 ENDM
 
+;Macro to delete a card from a deck
+removeCards MACRO givenDeck, addr        ;Define the macro
+  mov ecx, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
+  mov eax, addr                          ;Assign the starting address to eax
+  delete: 
+    cmp eax, ecx                         ;Check if the given address is the last element
+    je end                               ;If element is the last one on the deck, jmp to end
+    mov ebx, givenDeck[(eax+1)*4]        ;Assign the value of the next element in the givenDeck to ebx
+    mov givenDeck[eax*4], ebx            ;Move the next element to the current position
+    add eax                              ;increment eax to the next position
+    jmp delete                           ;Jump back to the beginning of the loop
+  end:
+    mov givenDeck[eax*4], ' '            ;Assign an empty value to the last element
+ENDM
+
 .data
 ; Create list containing cards
 deck DWORD '1h', '2h', '3h','4h','5h','6h','7h','8h','9h','10h','jh','qh','kh','ah','1d','2d','3d','4d','5d','6d','7d','8d','9d','10d','jd','qd','kd','ad','1c','2c','3c','4c','5c','6c','7c','8c','9c','10c','jc','qc','kc','ac','1s','2s','3s','4s','5s','6s','7s','8s','9s','10s','js','qs','ks','as'
