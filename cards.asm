@@ -9,15 +9,20 @@ Include Irvine32.inc
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   mov ecx, 0                  ;Count number of cards in players deck
-  mov edx, deckCount                 ;Count number of cards left in regular deck
+  ;mov edx, deckCount                 ;Count number of cards left in regular deck
+  lea edx, givenDeck
   addCards:                    
     call Randomize            ;Get a random card from deck using randomize to get a random number
-    mov eax, edx
+    mov eax, deckCount
     call RandomRange
-    mov ebx, deck[eax*4]      ;Move random card to ebx
-    mov givenDeck[ecx*4], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
+    lea edx,deck
+    mov ebx, deck[edx+eax*3]      ;Move random card to ebx
+    lea edx, givenDeck
+    mov givenDeck[edx+ecx*3], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
     ;Input operation to remove card from deck
+    mov placeHolder, ecx
     removeCards deck, eax
+    mov ecx, placeHolder
     inc ecx                   ;increment ecx (number of cards in given deck)
     cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
     jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
@@ -29,15 +34,16 @@ ENDM
 removeCards MACRO givenDeck, addr        ;Define the macro
   mov ecx, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
   mov eax, addr                          ;Assign the starting address to eax
+  lea edx, givenDeck
   delete: 
     cmp eax, ecx                         ;Check if the given address is the last element
     je end                               ;If element is the last one on the deck, jmp to end
-    mov ebx, givenDeck[(eax+1)*4]        ;Assign the value of the next element in the givenDeck to ebx
-    mov givenDeck[eax*4], ebx            ;Move the next element to the current position
+    mov ebx, givenDeck[edx+(eax+1)*3]        ;Assign the value of the next element in the givenDeck to ebx
+    mov givenDeck[edx+eax*3], ebx            ;Move the next element to the current position
     inc eax                              ;increment eax to the next position
     jmp delete                           ;Jump back to the beginning of the loop
   end:
-    mov givenDeck[eax*4], " "            ;Assign an empty value to the last element
+    mov givenDeck[edx+eax*3], " "            ;Assign an empty value to the last element
 ENDM
 
 ;Check the amount of elements in an array
@@ -76,12 +82,12 @@ deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
      BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
      BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
 
-playerDeck DWORD 52 DUP(?)
+playerDeck BYTE 52 DUP(?)
 ; Create list for computer deck
-compDeck DWORD 52 DUP(?)
+compDeck BYTE 52 DUP(?)
 cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
 inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
-
+placeHolder DWORD 0
 
 .code
 main PROC
