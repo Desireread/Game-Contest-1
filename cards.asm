@@ -78,7 +78,7 @@ inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = 
 
 
 .code
-
+main PROC
 ;Add a procedure for "I declare war"
 shuffle playerDeck, 25
 shuffle compDeck, 25
@@ -116,4 +116,6 @@ call WriteString
 ;Add a procedure for blackjack
   ;Extra
 ;Procedure for checking a value
-checkValue Proc
+;checkValue Proc
+main ENDP
+END main
