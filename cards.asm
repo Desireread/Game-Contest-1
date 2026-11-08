@@ -8,7 +8,7 @@ Include Irvine32.inc
 
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
-  mov ecx, 0                  ;Count number of cards in player's deck
+  mov ecx, 0                  ;Count number of cards in players deck
   mov edx, deckCount                 ;Count number of cards left in regular deck
   addCards:                    
     call Randomize            ;Get a random card from deck using randomize to get a random number
@@ -57,7 +57,7 @@ printDeck MACRO givenDeck, size          ;Macro to print the given deck
   print:                                 ;Printing loop
     mov edx, givenDeck[ecx*4]            ;Assign the value of the current element to edx
     call WriteString                     ;Print the current element to the console
-    mov edx, ' '                         ;Add a space between each element
+    mov edx, " "                         ;Add a space between each element
     call WriteString                  
     inc ecx                              ;Point to the next element
     cmp ecx, size                        ;Check if ecx is more then the size of the array                          
@@ -67,9 +67,15 @@ ENDM
 
 .data
 ; Create list containing cards
-deck DWORD "1h", "2h", "3h","4h","5h","6h","7h","8h","9h","10h","jh","qh","kh","ah","1d","2d","3d","4d","5d","6d","7d","8d","9d","10d","jd","qd","kd","ad","1c","2c","3c","4c","5c","6c","7c","8c","9c","10c","jc","qc","kc","ac","1s","2s","3s","4s","5s","6s","7s","8s","9s","10s","js","qs","ks","as"
-deckCount DWORD 52
-; Create list for player deck
+deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
+     BYTE "7h",0,"8h",0,"9h",0,"10h",0,"jh",0,"qh",0,"kh",0
+     BYTE "ah",0,"1d",0,"2d",0,"3d",0,"4d",0,"5d",0,"6d",0
+     BYTE "7d",0,"8d",0,"9d",0,"10d",0,"jd",0,"qd",0,"kd",0
+     BYTE "ad",0,"1c",0,"2c",0,"3c",0,"4c",0,"5c",0,"6c",0,"7c",0
+     BYTE "8c",0,"9c",0,"10c",0,"jc",0,"qc",0,"kc",0,"ac",0,"1s",0
+     BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
+     BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
+
 playerDeck DWORD 52 DUP(?)
 ; Create list for computer deck
 compDeck DWORD 52 DUP(?)
@@ -106,11 +112,11 @@ call WriteString
     ;if match is found, player point increases
 
 ;Compuetr's turn to play
-    ;Random number from compDeck's size if chose
+    ;Random number from compDecks size if chose
     ;Computer asks for number/letter
     ;If player has matching cards, those cards will be surrenedered to computer's deck
       ;This transaction will be displayed
-    ;Computer's deck will be checked for macthes of 4
+    ;Computers deck will be checked for macthes of 4
       ;If match is found, computer point increases
 
 ;Add a procedure for blackjack
