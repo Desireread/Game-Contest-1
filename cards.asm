@@ -85,7 +85,7 @@ deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
      BYTE "8c",0,"9c",0,"10c",0,"jc",0,"qc",0,"kc",0,"ac",0,"1s",0
      BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
      BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
-
+deckCount DWORD 52
 playerDeck BYTE 52*3 DUP(?)
 ; Create list for computer deck
 compDeck BYTE 52*3 DUP(?)
