@@ -17,11 +17,11 @@ shuffle MACRO givenDeck, numCards
     mov ebx, deck[eax*4]      ;Move random card to ebx
     mov givenDeck[ecx*4], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
     ;Input operation to remove card from deck
-    removeCard deck, eax
-    add ecx                   ;increment ecx (number of cards in given deck)
+    removeCards deck, eax
+    inc ecx                   ;increment ecx (number of cards in given deck)
     cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
     jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
-    sub edx                   ;subtract the amount of cards that are in deck
+    dec edx                   ;subtract the amount of cards that are in deck
 ENDM
 
 ;Macro to delete a card from a deck
@@ -33,7 +33,7 @@ removeCards MACRO givenDeck, addr        ;Define the macro
     je end                               ;If element is the last one on the deck, jmp to end
     mov ebx, givenDeck[(eax+1)*4]        ;Assign the value of the next element in the givenDeck to ebx
     mov givenDeck[eax*4], ebx            ;Move the next element to the current position
-    add eax                              ;increment eax to the next position
+    inc eax                              ;increment eax to the next position
     jmp delete                           ;Jump back to the beginning of the loop
   end:
     mov givenDeck[eax*4], ' '            ;Assign an empty value to the last element
@@ -46,7 +46,7 @@ deckSize MACRO givenDeck
     mov edx, [givenDeck[ecx*4]]          ;Assign the element int he current address to edx
     cmp edx, ' '                         ;Check if the current element is "emtpy"
     jne end                              ;Jump out of th eloop is the elemnt is empty
-    add ecx                              ;Increase the number of elemnts found in the deck
+    inc ecx                              ;Increase the number of elemnts found in the deck
     jmp checkSize                        ;jump to beginning  of loop
   end:
 ENDM
@@ -58,7 +58,7 @@ printDeck MACRO givenDeck, size          ;Macro to print the given deck
     call WriteString                     ;Print the current element to the console
     mov edx, ' '                         ;Add a space between each element
     call WriteString                  
-    add ecx                              ;Point to the next element
+    inc ecx                              ;Point to the next element
     cmp ecx, size                        ;Check if ecx is more then the size of the array                          
     jle print                            ;Jmp to start of loop if ecx is less than or equal to the size of the array
     call crlf                            ;Move to a new line
@@ -66,20 +66,20 @@ ENDM
 
 .data
 ; Create list containing cards
-deck DWORD '1h', '2h', '3h','4h','5h','6h','7h','8h','9h','10h','jh','qh','kh','ah','1d','2d','3d','4d','5d','6d','7d','8d','9d','10d','jd','qd','kd','ad','1c','2c','3c','4c','5c','6c','7c','8c','9c','10c','jc','qc','kc','ac','1s','2s','3s','4s','5s','6s','7s','8s','9s','10s','js','qs','ks','as'
+deck DWORD "1h", "2h", "3h","4h","5h","6h","7h","8h","9h","10h","jh","qh","kh","ah","1d","2d","3d","4d","5d","6d","7d","8d","9d","10d","jd","qd","kd","ad","1c","2c","3c","4c","5c","6c","7c","8c","9c","10c","jc","qc","kc","ac","1s","2s","3s","4s","5s","6s","7s","8s","9s","10s","js","qs","ks","as"
 ; Create list for player deck
 playerDeck DWORD 50 DUP(?)
 ; Create list for computer deck
 compDeck DWORD 50 DUP(?)
-cardSearch DWORD "What number do you want to look for?"             ;Prompt for GOFish player
-inputReminder "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a"
+cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
+inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
 
 
 .code
 
 ;Add a procedure for "I declare war"
 shuffle playerDeck, 25
-shuffle, compDeck, 25
+shuffle compDeck, 25
 
 
 ;Add a procedure for go fish
