@@ -9,7 +9,7 @@ Include Irvine32.inc
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   mov ecx, 0                  ;Count number of cards in player's deck
-  mov edx, 50                 ;Count number of cards left in regular deck
+  mov edx, deckCount                 ;Count number of cards left in regular deck
   addCards:                    
     call Randomize            ;Get a random card from deck using randomize to get a random number
     mov eax, edx
@@ -22,6 +22,7 @@ shuffle MACRO givenDeck, numCards
     cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
     jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
     dec edx                   ;subtract the amount of cards that are in deck
+  mov deckCount, edx          ;Update the value for the number of cards left in the deck
 ENDM
 
 ;Macro to delete a card from a deck
@@ -36,7 +37,7 @@ removeCards MACRO givenDeck, addr        ;Define the macro
     inc eax                              ;increment eax to the next position
     jmp delete                           ;Jump back to the beginning of the loop
   end:
-    mov givenDeck[eax*4], ' '            ;Assign an empty value to the last element
+    mov givenDeck[eax*4], " "            ;Assign an empty value to the last element
 ENDM
 
 ;Check the amount of elements in an array
@@ -44,7 +45,7 @@ deckSize MACRO givenDeck
   mov ecx, 0                             ;Start at 0
   checkSize:                             ;Loop to check how many elements are in the array
     mov edx, [givenDeck[ecx*4]]          ;Assign the element int he current address to edx
-    cmp edx, ' '                         ;Check if the current element is "emtpy"
+    cmp edx, " "                        ;Check if the current element is "emtpy"
     jne end                              ;Jump out of th eloop is the elemnt is empty
     inc ecx                              ;Increase the number of elemnts found in the deck
     jmp checkSize                        ;jump to beginning  of loop
@@ -67,10 +68,11 @@ ENDM
 .data
 ; Create list containing cards
 deck DWORD "1h", "2h", "3h","4h","5h","6h","7h","8h","9h","10h","jh","qh","kh","ah","1d","2d","3d","4d","5d","6d","7d","8d","9d","10d","jd","qd","kd","ad","1c","2c","3c","4c","5c","6c","7c","8c","9c","10c","jc","qc","kc","ac","1s","2s","3s","4s","5s","6s","7s","8s","9s","10s","js","qs","ks","as"
+deckCount DWORD 52
 ; Create list for player deck
-playerDeck DWORD 50 DUP(?)
+playerDeck DWORD 52 DUP(?)
 ; Create list for computer deck
-compDeck DWORD 50 DUP(?)
+compDeck DWORD 52 DUP(?)
 cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
 inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
 
