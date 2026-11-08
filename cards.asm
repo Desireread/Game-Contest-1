@@ -8,6 +8,7 @@ Include Irvine32.inc
 
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
+  LOCAL addCards
   mov ecx, 0                  ;Count number of cards in players deck
   ;mov edx, deckCount                 ;Count number of cards left in regular deck
   lea edx, givenDeck
@@ -32,33 +33,36 @@ ENDM
 
 ;Macro to delete a card from a deck
 removeCards MACRO givenDeck, addr        ;Define the macro
+  LOCAL delete, stop
   mov ecx, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
   mov eax, addr                          ;Assign the starting address to eax
   lea edx, givenDeck
   delete: 
     cmp eax, ecx                         ;Check if the given address is the last element
-    je end                               ;If element is the last one on the deck, jmp to end
+    je stop                               ;If element is the last one on the deck, jmp to end
     mov ebx, givenDeck[edx+(eax+1)*3]        ;Assign the value of the next element in the givenDeck to ebx
     mov givenDeck[edx+eax*3], ebx            ;Move the next element to the current position
     inc eax                              ;increment eax to the next position
     jmp delete                           ;Jump back to the beginning of the loop
-  end:
+  stop:
     mov givenDeck[edx+eax*3], " "            ;Assign an empty value to the last element
 ENDM
 
 ;Check the amount of elements in an array
 deckSize MACRO givenDeck
+  LOCAL checkSize, stop
   mov ecx, 0                             ;Start at 0
   checkSize:                             ;Loop to check how many elements are in the array
     mov edx, [givenDeck[ecx*4]]          ;Assign the element int he current address to edx
     cmp edx, " "                        ;Check if the current element is "emtpy"
-    jne end                              ;Jump out of th eloop is the elemnt is empty
+    jne stop                              ;Jump out of th eloop is the elemnt is empty
     inc ecx                              ;Increase the number of elemnts found in the deck
     jmp checkSize                        ;jump to beginning  of loop
-  end:
+  stop:
 ENDM
 
 printDeck MACRO givenDeck, size          ;Macro to print the given deck
+  LOCAL print
   mov ecx, 0                             ;assign 0 to ecx
   print:                                 ;Printing loop
     mov edx, givenDeck[ecx*4]            ;Assign the value of the current element to edx
@@ -82,9 +86,9 @@ deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
      BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
      BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
 
-playerDeck BYTE 52 DUP(?)
+playerDeck BYTE 52*3 DUP(?)
 ; Create list for computer deck
-compDeck BYTE 52 DUP(?)
+compDeck BYTE 52*3 DUP(?)
 cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
 inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
 placeHolder DWORD 0
