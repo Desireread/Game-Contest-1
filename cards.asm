@@ -136,13 +136,13 @@ compare PROC
       call IsDigit                                  ;test if computer card is also 1-10
       jnz computerWins                               ;Computer wins if it doesnt have a number card
       
-      cmp ah, 1                                     ;Check if player has 10
+      cmp ah, "1"                                     ;Check if player has 10
       je p1                                             ;Jump to p1 if so, else jump to p0
       jmp p0
       
       p0:
          
-          cmp al, 1                                 ;Check if computer has a 10
+          cmp al, "1"                                 ;Check if computer has a 10
           je computerWins                                     ;If so computer wins
   
           inc esi                                   ;Go to the next characters
@@ -152,14 +152,14 @@ compare PROC
           cmp ah, al                                ;Check which card wins
           ja playerBigger                             ;Player wins if it has the higher card  
           jb computerBigger                               ;Computer wins if it has the higher card
-          jmp equal                                 ;Cards are equal, war is called
+          jmp war                                 ;Cards are equal, war is called
 
 
       p1:                                          ;Player has a 10
-        cmp al,1                                   ;Check if computer has a 10
+        cmp al,"1"                                   ;Check if computer has a 10
         jb playerBigger                                ;Player wins if computer doesnt have a 10 else, theyre equal
       
-        jmp equals
+        jmp war
           
         
       
@@ -212,7 +212,7 @@ compare PROC
         cmp al, "k"
         je war
     
-        cmp al "j"
+        cmp al, "j"
         jne playerBigger
 
         inc ebx
@@ -278,7 +278,7 @@ warDeclared PROC
   ;Load card into playerCard
   mov esi, OFFSET playerDeck                      ;Get first element of player Deck
   mov ebx, [esi]                                    
-  mov playerCard, [ebx]                           ;Load the element into playerCard
+  mov playerCard, ebx                           ;Load the element into playerCard
   removeCards playerDeck, 0, playerDeckCount      ;Delete card from playerDeck
 
   compWar:
@@ -297,7 +297,7 @@ warDeclared PROC
 
   mov esi, OFFSET compDeck                      ;Get first element of computer Deck
   mov ebx, [esi]
-  mov compCard, [ebx]
+  mov compCard, ebx
   removeCards compDeck, 0, compDeckCount
 
   call compare                                   ;Compare new cards
@@ -322,7 +322,8 @@ warDeclared PROC
   add eax, OFFSET warDeck
   
   load:
-    mov [esi], [eax]
+    mov ebx, [eax]
+    mov [esi], ebx
     add esi, 4
     add eax, 4
     inc count
