@@ -11,21 +11,23 @@ shuffle MACRO givenDeck, numCards
   LOCAL addCards
   mov ecx, 0
   addCards:
-    call Randomize                                  ;Randomly get key of the next address
+    call Randomize                                  ;Randomly get key of the next address (Pg.164)
     mov eax, deckCount                              
     call RandomRange
 
-    mov placeHolder, eax                            ;Keep the value fo eax for when the card needs to be deleted
-    imul eax, 3                                     
-    lea edx, deck                                   ;Load the starting address of the random card into edx
-    add edx, eax                                    ;add eax to edx to get the correct starting address of where the card is located in deck
-    
-    mov ebx, deck[edx]                               ;Load the card into ebx
-    
-           
-    removeCards deck, placeHolder                           ;Remove the card from deck
 
-    ;Get the plot of the next address in givenDeck
+    mov esi, OFFSET deck                           ;Load the first byte of deck into esi (pg. 118)
+    add esi, eax                                   ;Add the index of the random card to eax to get the proper address
+    mov ebx, [esi]                                 ;Load the card into ebx
+           
+    removeCards deck, eax                           ;Remove the card from deck
+
+    
+
+    mov esi, OFFSET givenDeck
+    add esi, ecx
+    mov [esi], ebx
+
     lea edx, givenDeck                ;Load beginning address of givenDeck into edx
     mov eax, ecx                      ;Space number of key into eax
     imul eax, 3                       ;Multiply by 3 to account for memory spacing
@@ -37,46 +39,6 @@ shuffle MACRO givenDeck, numCards
     cmp ecx, numCards                 ;Check if number of cards in givenDeck has reached the number of cards it needs to load
     jl addCards                                 ;Repeat loop if not
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  mov ecx, 0                  ;Count number of cards in players deck
-  ;mov edx, deckCount                 ;Count number of cards left in regular deck
-  lea edx, givenDeck
-  addCards:                    
-    call Randomize            ;Get a random card from deck using randomize to get a random number
-    mov eax, deckCount
-    call RandomRange
-    lea edx,deck
-    mov ebx, deck[edx+eax*3]      ;Move random card to ebx
-    lea edx, givenDeck
-    mov givenDeck[edx+ecx*3], ebx      ;Add random card from deck (in ebx) to position ecx in given deck
-    ;Input operation to remove card from deck
-    mov placeHolder, ecx
-    removeCards deck, eax
-    mov ecx, placeHolder
-    inc ecx                   ;increment ecx (number of cards in given deck)
-    cmp ecx, numCards         ;Check if givenDeck contains the right about of cards
-    jl addCards               ;Jump back to beginning of loop of givenDeck has less than numCards amount of cards
-    dec edx                   ;subtract the amount of cards that are in deck
-  mov deckCount, edx          ;Update the value for the number of cards left in the deck
 ENDM
 
 ;Macro to delete a card from a deck
@@ -100,15 +62,15 @@ ENDM
 
 .data
 ; Create list containing cards
-deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
-     BYTE "7h",0,"8h",0,"9h",0,"10h",0,"jh",0,"qh",0,"kh",0
-     BYTE "ah",0,"1d",0,"2d",0,"3d",0,"4d",0,"5d",0,"6d",0
-     BYTE "7d",0,"8d",0,"9d",0,"10d",0,"jd",0,"qd",0,"kd",0
-     BYTE "ad",0,"1c",0,"2c",0,"3c",0,"4c",0,"5c",0,"6c",0,"7c",0
-     BYTE "8c",0,"9c",0,"10c",0,"jc",0,"qc",0,"kc",0,"ac",0,"1s",0
-     BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
-     BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
-     BYTE "jester", 0, "jester", 0
+deck BYTE "01h","02h","03h","04h","05h","06h",
+     BYTE "07h","08h","09h","10h","0jh","0qh","0kh"
+     BYTE "0ah","01d","02d",0,"03d","04d","05d","06d"
+     BYTE "07d","08d","09d","10d","0jd","0qd","0kd"
+     BYTE "0ad","01c","02c","03c","04c","05c","06c","07c"
+     BYTE "08c","09c","10c","0jc","0qc","0kc","0ac","01s"
+     BYTE "02s","03s","04s","05s","06s","07s","08s","09s"     
+     BYTE "10s","0js","0qs","0ks","0as"
+     BYTE "jes","jes"
 deckCount DWORD 54
 playerDeck BYTE 54*3 DUP(?)
 ; Create list for computer deck
