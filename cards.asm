@@ -224,9 +224,25 @@ compare PROC
   playerWins:
     mov edx, playerWins
     call WriteString
+    mov esi, OFFSET playerDeck
+    mov eax, playerDeckCount
+    imul eax, 4
+    add esi, eax
+    mov [esi], playerCard
+    mov [esi+4], compCard
+    add playerDeckCount, 2
+    jmp endComparison
   computerWins:
     mov edx, compWins
-    cal WriteString
+    call WriteString
+    mov esi, OFFSET compDeck
+    mov eax, compDeckCount
+    imul eax, 4
+    add esi, eax
+    mov [esi], playerCard
+    mov [esi+4], compCard
+    add compDeckCount, 2
+    jmp endComparison
   war:
     call warDeclared
   endComparison:
@@ -261,7 +277,7 @@ warDeclared PROC
   removeCards playerDeck, 0, playerDeckCount      ;Delete card from playerDeck
 
   compWar:
-    mov esi, OFFSET compDeck                      ;Get first element of player Deck
+    mov esi, OFFSET compDeck                      ;Get first element of computer Deck
     mov ebx, [esi]                                ;Load the element into ebx
     mov esi, OFFSET warDeck 
     mov eax, count
@@ -274,12 +290,12 @@ warDeclared PROC
     cmp count, 8
     jl compWar
 
-  mov esi, OFFSET compDeck                      ;Get first element of player Deck
+  mov esi, OFFSET compDeck                      ;Get first element of computer Deck
   mov ebx, [esi]
   mov compCard, [ebx]
   removeCards compDeck, 0, compDeckCount
 
-  
+  call compare                                   ;Comparer new cards
   RET
 ENDP warDeclared 
 
