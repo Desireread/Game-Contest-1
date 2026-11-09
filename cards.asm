@@ -319,7 +319,7 @@ compare PROC
         cmp al, "a"
         je war
 
-        comp al, "j"
+        cmp al, "j"
         jne playerBigger
 
         inc ebx
