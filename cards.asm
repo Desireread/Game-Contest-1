@@ -23,7 +23,7 @@ shuffle MACRO givenDeck, numCards
     mov ebx, [esi]                                 ;Load the card into ebx
   
     mov ecx, count                                   ;Save ecx in count
-    removeCards deck, placeHolder                           ;Remove the card from deck
+    removeCards deck, placeHolder, deckCount                           ;Remove the card from deck
 
     mov count, ecx
     mov esi, OFFSET givenDeck                               ;Load the address of the first byte of givenDeck into esi
