@@ -64,6 +64,10 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 ENDM
 
 display MACRO player, card
+
+  mov edx, player
+  call WriteString
+  
   mov esi, OFFSET card
   mov al, [esi]
   cmp al, "0"
@@ -169,7 +173,14 @@ warDeck BYTE 8*54 DUP(?)
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
 bPrompt BYTE "Ready to play (Y/N)? ",0
-nextRound BYTE "Type 'next' for next round", 0
+nextRound BYTE "Type 'Y' for next round", 0
+
+pGame BYTE "Player wins the game!", 0
+cGame BYTE "Computer wins the game!",0
+tGame BYTE "It's a tie!",0
+
+pHas BYTE "Player has ", 0
+cHas BYTE "Computer has ",0
 
 placeHolder DWORD 0
 playerDeckCount DWORD 0
@@ -198,7 +209,52 @@ call WriteString
 mov edx, OFFSET buffer
 call ReadString
 
+cmp edx, "Y"
+je playGame
+jmp endGame
 
+gameLoop:
+  call crlf
+  mov esi, OFFSET playerDeck                           ;Set playerCard
+  mov ebx, [esi]
+  mov playerCard, ebx                                  
+  removeCards playerDeck, 0, playerDeckCount           ;Remove card from player deck
+  display pHas, playerCard                             ;display player card
+
+  mov esi, OFFSET compDeck                           ;Set compCard
+  mov ebx, [esi]
+  mov compCard, ebx
+  removeCards computerDeck, 0, compDeckCount        ;Remove card from computer deck
+  display cHas, compCard                            ;display the computer card
+  call compare                                      ;Determine who wins
+  
+  mov edx, nextRound                                  ;Prompt player to see if they want to play the next round
+  call WriteString
+  mov edx, OFFSET buffer                              ;Take in input
+  call ReadString
+  cmp edx, "Y"
+  je gameLoop                                         ;Jmp to beginning of loop of player wants to continue game
+  
+  cmp playerDeckCount, compDeckCount                  ;Check which deck has more cards
+  ja pWins                                            ;Player wins if its deck has more
+  jb cWins                                            ;Computer loses if player deck has less
+
+  mov edx, tGame                                      ;Tie output if decks are the same amount
+  call WriteString                                   
+  call crlf
+  jmp endGame
+  
+  pWins:                                              ;PLayers wins output
+    mov edx, pGame  
+    call WriteString
+    jmp endGame
+
+  cWins:                                               ;computer wins output
+    mov edx, cGame
+    call WriteString
+    jmp endGame
+
+endGame:
 
 main ENDP
 
