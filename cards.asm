@@ -134,7 +134,7 @@ compare PROC
       mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jnz computerWins                               ;Computer wins if it doesnt have a number card
+      jnz computerBigger                              ;Computer wins if it doesnt have a number card
       
       cmp ah, "1"                                     ;Check if player has 10
       je p1                                             ;Jump to p1 if so, else jump to p0
@@ -143,7 +143,7 @@ compare PROC
       p0:
          
           cmp al, "1"                                 ;Check if computer has a 10
-          je computerWins                                     ;If so computer wins
+          je computerBigger                                     ;If so computer wins
   
           inc esi                                   ;Go to the next characters
           inc ebx
