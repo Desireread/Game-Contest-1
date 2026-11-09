@@ -10,17 +10,19 @@ Include Irvine32.inc
 shuffle MACRO givenDeck, numCards
   LOCAL addCards
   mov ecx, 0
+  call Randomize                                  ;Randomly get key of the next address (Pg.164)
   addCards:
-    call Randomize                                  ;Randomly get key of the next address (Pg.164)
+    
     mov eax, deckCount                              
     call RandomRange
 
-
+    mov placeHolder, eax
+    imul eax, 3
     mov esi, OFFSET deck                           ;Load the first byte of deck into esi (pg. 118)
     add esi, eax                                   ;Add the index of the random card to eax to get the proper address
     mov ebx, [esi]                                 ;Load the card into ebx
            
-    removeCards deck, eax                           ;Remove the card from deck
+    removeCards deck, placeHolder                           ;Remove the card from deck
 
     
 
@@ -62,15 +64,15 @@ ENDM
 
 .data
 ; Create list containing cards
-deck BYTE "01h","02h","03h","04h","05h","06h",
-     BYTE "07h","08h","09h","10h","0jh","0qh","0kh"
-     BYTE "0ah","01d","02d",0,"03d","04d","05d","06d"
-     BYTE "07d","08d","09d","10d","0jd","0qd","0kd"
-     BYTE "0ad","01c","02c","03c","04c","05c","06c","07c"
-     BYTE "08c","09c","10c","0jc","0qc","0kc","0ac","01s"
-     BYTE "02s","03s","04s","05s","06s","07s","08s","09s"     
-     BYTE "10s","0js","0qs","0ks","0as"
-     BYTE "jes","jes"
+deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0",
+     BYTE "07h0","08h0","09h0","10h","jh00","qh00","kh00"
+     BYTE "0ah0","01d0","02d0","03d0","04d0","05d0","06d0"
+     BYTE "07d0","08d0","09d0","10d0","jd00","qd00","kd00"
+     BYTE "ad00","01c0","02c0","03c0","04c0","05c0","06c0","07c0"
+     BYTE "08c0","09c0","10c0","jc00","qc00","kc00","ac00","01s0"
+     BYTE "02s0","03s0","04s0","05s0","06s0","07s0","08s0","09s0"     
+     BYTE "10s0","js00","qs00","ks00","as00"
+     BYTE "jes0","jes0"
 deckCount DWORD 54
 playerDeck BYTE 54*3 DUP(?)
 ; Create list for computer deck
