@@ -172,7 +172,7 @@ deckCount DWORD 54
 playerDeck BYTE 54*4 DUP(?)
 ; Create list for computer deck
 compDeck BYTE 54*4 DUP(?)
-warDeck BYTE 8*54 DUP(?)
+warDeck BYTE 8*4 DUP(?)
 
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
