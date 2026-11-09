@@ -256,7 +256,7 @@ compare PROC
       call warDeclared
     endComparison:
     RET
-ENDP compare
+compare ENDP 
 
 
 warDeclared PROC
@@ -337,6 +337,6 @@ warDeclared PROC
     jl load
   
   RET
-ENDP warDeclared 
+ warDeclared ENDP
 
 END main
