@@ -226,8 +226,9 @@ gameLoop:
   mov compCard, ebx
   removeCards computerDeck, 0, compDeckCount        ;Remove card from computer deck
   display cHas, compCard                            ;display the computer card
+
   call compare                                      ;Determine who wins
-  
+  call crlf
   mov edx, nextRound                                  ;Prompt player to see if they want to play the next round
   call WriteString
   mov edx, OFFSET buffer                              ;Take in input
