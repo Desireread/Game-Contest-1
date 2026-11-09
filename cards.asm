@@ -9,32 +9,26 @@ Include Irvine32.inc
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   LOCAL addCards
-  mov ecx, 0
+  mov ecx, 0                                      ;Start at 0 cards in the deck
   call Randomize                                  ;Randomly get key of the next address (Pg.164)
   addCards:
     
-    mov eax, deckCount                              
-    call RandomRange
+    mov eax, deckCount                              ;Load the amount of cards in deck into eax
+    call RandomRange                                ;Get a random card based on the number of cards in deck
 
-    mov placeHolder, eax
-    imul eax, 3
+    mov placeHolder, eax                            ;Kepp the element index in placeHolder
+    imul eax, 4                                     ;Multiple eax by 4 to get the location address of the card
     mov esi, OFFSET deck                           ;Load the first byte of deck into esi (pg. 118)
     add esi, eax                                   ;Add the index of the random card to eax to get the proper address
     mov ebx, [esi]                                 ;Load the card into ebx
            
     removeCards deck, placeHolder                           ;Remove the card from deck
 
-    
-
-    mov esi, OFFSET givenDeck
-    add esi, ecx
-    mov [esi], ebx
-
-    lea edx, givenDeck                ;Load beginning address of givenDeck into edx
-    mov eax, ecx                      ;Space number of key into eax
-    imul eax, 3                       ;Multiply by 3 to account for memory spacing
-    add eax, edx                      ;add beginning address to key value to find starting address of next free space in givenDeck
-    mov givenDeck[eax], ebx           ;Load the random card into givenDeck
+    mov esi, OFFSET givenDeck                               ;Load the address of the first byte of givenDeck into esi
+    mov eax, ecx                                            ;Load the index the random card needs to be inserted at into eax
+    imul eax, 4                                             ;Multiply eax by 4 to get the starting byte address 
+    add esi, eax                                            ;add the starting byte address to the address of te first byte in the given deck to get the address of the index where the random card will be placed
+    mov [esi], ebx                                          ;Mov the random card into the proper address
 
     inc ecx                           ;The number of cards in givenDeck has increased                  
     dec deckCount                     ;The number of cards in deck has decreased
@@ -65,7 +59,7 @@ ENDM
 .data
 ; Create list containing cards
 deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0",
-     BYTE "07h0","08h0","09h0","10h","jh00","qh00","kh00"
+     BYTE "07h0","08h0","09h0","10h0","jh00","qh00","kh00"
      BYTE "0ah0","01d0","02d0","03d0","04d0","05d0","06d0"
      BYTE "07d0","08d0","09d0","10d0","jd00","qd00","kd00"
      BYTE "ad00","01c0","02c0","03c0","04c0","05c0","06c0","07c0"
