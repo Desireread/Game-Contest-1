@@ -40,18 +40,16 @@ shuffle MACRO givenDeck, numCards
 ENDM
 
 ;Macro to delete a card from a deck
-removeCards MACRO givenDeck, addr        ;Define the macro
+removeCards MACRO givenDeck, addr, size        ;Define the macro
   LOCAL delete, stop
   mov esi, OFFSET givenDeck              ;Load the first byte address of givenDeck
   mov eax, addr
   imul eax, 4
   add esi, eax                           ;Get the first byte address of teh starting index
 
-  mov eax, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
-  shr eax, 2                             ;Get the number of elements in eax
   mov ecx, addr
   delete: 
-    cmp ecx, eax                         ;Check if the given address is the last element
+    cmp ecx, size                         ;Check if the current element is the last one
     je stop                               ;If element is the last one on the deck, jmp to stop
 
     mov card, [esi+4]                    ;Load the next element into card
