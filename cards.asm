@@ -96,32 +96,7 @@ removeCards MACRO givenDeck, addr        ;Define the macro
     mov givenDeck[edx+eax*3], " "            ;Assign an empty value to the last element
 ENDM
 
-;Check the amount of elements in an array
-deckSize MACRO givenDeck
-  LOCAL checkSize, stop
-  mov ecx, 0                             ;Start at 0
-  checkSize:                             ;Loop to check how many elements are in the array
-    mov edx, [givenDeck[ecx*4]]          ;Assign the element int he current address to edx
-    cmp edx, " "                        ;Check if the current element is "emtpy"
-    jne stop                              ;Jump out of th eloop is the elemnt is empty
-    inc ecx                              ;Increase the number of elemnts found in the deck
-    jmp checkSize                        ;jump to beginning  of loop
-  stop:
-ENDM
 
-printDeck MACRO givenDeck, size          ;Macro to print the given deck
-  LOCAL print
-  mov ecx, 0                             ;assign 0 to ecx
-  print:                                 ;Printing loop
-    mov edx, givenDeck[ecx*4]            ;Assign the value of the current element to edx
-    call WriteString                     ;Print the current element to the console
-    mov edx, " "                         ;Add a space between each element
-    call WriteString                  
-    inc ecx                              ;Point to the next element
-    cmp ecx, size                        ;Check if ecx is more then the size of the array                          
-    jle print                            ;Jmp to start of loop if ecx is less than or equal to the size of the array
-    call crlf                            ;Move to a new line
-ENDM
 
 .data
 ; Create list containing cards
