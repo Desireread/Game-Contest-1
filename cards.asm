@@ -63,7 +63,10 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 
 ENDM
 
+display MACRO card
+  
 
+ENDM
 
 .data
 ; Create list containing cards
@@ -83,31 +86,32 @@ compDeck BYTE 54*4 DUP(?)
 ;cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
 ;inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
 
+playerWins BYTE "You have won this round!",0
+compWins BYTE "Computer has won this round!",0
+bPrompt "Ready to play?",0
+
 placeHolder DWORD 0
 playerDeckCount DWORD 0
 compDeckCount DWORD 0
 count DWORD 0
 card DWORD ?
+playerCard DWORD ?
+compCard DWORD ?
 
 .code
 main PROC
 ;Add a procedure for "I declare war"
-shuffle playerDeck, 26
-shuffle compDeck, 26
+  shuffle playerDeck, 26
+  shuffle compDeck, 26
 
 
-;Add a procedure for go fish
-shuffle playerDeck, 7
-shuffle compDeck, 7
 
-;Print deck to the board (macro?)
-printDeck playerDeck, 7
-;Player types in the number they are looking for
-mov edx, inputReminder
+
+;Player types in whether to play
+mov edx, bPrompt
 call WriteString
-call crlf
-mov edx, cardSearch
-call WriteString
+
+
 
 
 
@@ -131,4 +135,43 @@ call WriteString
 ;checkValue Proc
   
 main ENDP
+
+;Zero flag is set if player wins, cleard if computer wins
+compare PROC
+  mov esi, OFFSET playerCard
+  mov al, [esi]
+
+  call IsDigit
+  jz playerHasNumber
+
+  jmp playHasCharacter
+
+  playerHasNumber:                                  ;player has card 1-10
+      mov bl, al                                    ;Save first character of playerCard in bl
+      mov eax, OFFSET compCard                      ;Load computer card into eax
+      mov al, [eax]                                 ;Load first character of computer card into al
+
+      call IsDigit                                  ;test if computer card is also 1-10
+      jz bothNumbers                                ;Jump to bothNumbers of both cards are number cards
+      jmp compWins                                  ;Computer wins if it doesn;t have a number card
+
+      
+
+  playerHasCharacter:                                
+      mov bl, al                                    ;Save first character of playerCard in bl
+      mov eax, OFFSET compCard                      ;Load computer card into eax
+      mov al, [eax]                                 ;Load first character of computer card into al
+
+      call IsDigit                                  ;test if computer card is also 1-10
+      jz playerWins                                 ;Jump to playerWins of computer card is 1-10
+
+  playerWins:
+
+
+  computerWins:
+    
+  
+  RET
+ENDP compare
+
 END main
