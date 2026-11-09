@@ -98,6 +98,7 @@ count DWORD 0
 card DWORD ?
 playerCard DWORD ?
 compCard DWORD ?
+response DWORD ?
 
 
 .code
