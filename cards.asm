@@ -111,7 +111,7 @@ main PROC
 
 
 ;Player types in whether to play
-mov edx, bPrompt
+mov edx, OFFSET bPrompt
 call WriteString
 
 
@@ -223,7 +223,7 @@ compare PROC
         
 
     playerBigger:
-      mov edx, playerWins
+      mov edx, OFFSET playerWins
       call WriteString
       mov esi, OFFSET playerDeck
       mov eax, playerDeckCount
@@ -238,7 +238,7 @@ compare PROC
       xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
       jmp endComparison
     computerBigger:
-      mov edx, compWins
+      mov edx, OFFSET compWins
       call WriteString
       mov esi, OFFSET compDeck
       mov eax, compDeckCount
