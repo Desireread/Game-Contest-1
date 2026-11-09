@@ -235,7 +235,51 @@ ENDP compare
 
 
 warDeclared PROC
+  mov esi, OFFSET warDeck
+  mov [esi], playerCard
+  mov [esi+4], compCard
+  ;Load next 3 cards from playerDeck into warDeck
+  mov count, 2
+  playerWar:
+    mov esi, OFFSET playerDeck                      ;Get first element of player Deck
+    mov ebx, [esi]                                  ;Load the element into ebx
+    mov esi, OFFSET warDeck                         ;Get first index of warDeck
+    mov eax, count                                  ;
+    imul eax, 4
+    add esi, eax
+    mov [esi], ebx                                  ;Load the first card from playerDeck into warDeck
+    removeCards playerDeck, 0, playerDeckCount      ;Remove the card from playerDeck
+    dec playerDeckCount                             ;decrease the amount of cards in playerDeck
+    inc count                                       ;increase the number of cards in warDeck
+    cmp count, 5                                    ;If count is 5, player has placed 3 cards, continue to computer
+    jl playerWar                                    ;Else repeat loop
 
+  ;Load card into playerCard
+  mov esi, OFFSET playerDeck                      ;Get first element of player Deck
+  mov ebx, [esi]                                    
+  mov playerCard, [ebx]                           ;Load the element into playerCard
+  removeCards playerDeck, 0, playerDeckCount      ;Delete card from playerDeck
+
+  compWar:
+    mov esi, OFFSET compDeck                      ;Get first element of player Deck
+    mov ebx, [esi]                                ;Load the element into ebx
+    mov esi, OFFSET warDeck 
+    mov eax, count
+    imul eax, 4
+    add esi, eax
+    mov [esi], ebx
+    removeCards compDeck, 0, compDeckCount
+    dec compDeckCount
+    inc count
+    cmp count, 8
+    jl compWar
+
+  mov esi, OFFSET compDeck                      ;Get first element of player Deck
+  mov ebx, [esi]
+  mov compCard, [ebx]
+  removeCards compDeck, 0, compDeckCount
+
+  
   RET
 ENDP warDeclared 
 
