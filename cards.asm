@@ -88,7 +88,7 @@ warDeck BYTE 8*54 DUP(?)
 
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
-bPrompt BYTE "Ready to play?",0
+bPrompt BYTE "Ready to play (Y/N)? ",0
 nextRound BYTE "Type 'next' for next round", 0
 
 placeHolder DWORD 0
@@ -99,6 +99,7 @@ card DWORD ?
 playerCard DWORD ?
 compCard DWORD ?
 response DWORD ?
+buffer BYTE 50 DUP(?)
 
 
 .code
@@ -107,13 +108,12 @@ main PROC
   shuffle playerDeck, 26
   shuffle compDeck, 26
 
-
-
-
 ;Player types in whether to play
 mov edx, OFFSET bPrompt
 call WriteString
-
+mov edx, OFFSET buffer
+call ReadString
+cmp 
 
 
 main ENDP
