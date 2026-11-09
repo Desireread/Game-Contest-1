@@ -87,6 +87,9 @@ display MACRO player, card
     jmp class
 
   letter:
+    cmp "a"
+    je ace
+    
     cmp al, "q"
     je queen
 
@@ -97,10 +100,13 @@ display MACRO player, card
     cmp esi, "o"
     je jack
 
+
     mov edx, "joker"
-    call WriteString
     jmp end
 
+    ace:
+      mov edx, "ace"
+      call WriteString
     queen:
       mov edx, "queen"
       call WriteString
@@ -112,8 +118,34 @@ display MACRO player, card
     jack:
       mov edx, "jack"
       callWriteString
-      des esi
+      dec esi
       jmp class
+
+    class:
+      inc esi
+      mov al, [esi]
+      cmp al, "h"
+      je heart
+
+      cmp al, "c"
+      je club
+
+      cmp al, "s"
+      je spade
+
+      mov edx, diamonds
+      jmp end
+
+    heart:
+        mov edx, hearts
+    club:
+        mov edx, clubs
+    spade:
+        mov edx, spades
+
+    end:
+      call WriteString
+      crlf
       
 ENDM
 
@@ -165,7 +197,7 @@ mov edx, OFFSET bPrompt
 call WriteString
 mov edx, OFFSET buffer
 call ReadString
-cmp 
+
 
 
 main ENDP
@@ -232,6 +264,9 @@ compare PROC
 
       cmp ah, "k"
       je k
+
+      cmp ah, "a"
+      je a
       
       j:
         cmp al, "j"
@@ -254,6 +289,9 @@ compare PROC
         cmp al, "k"
         je computerBigger
 
+        cmp al, "a"
+        je computerBigger
+
         inc ebx
         mov al,[ebx]
         cmp al, "o"
@@ -263,8 +301,25 @@ compare PROC
       k:
         cmp al, "k"
         je war
-    
+
+        cmp al, "a"
+        je computerBigger
         cmp al, "j"
+        jne playerBigger
+
+       
+
+        inc ebx
+        mov al,[ebx]
+        cmp al, "o"
+        je computerBigger
+        jmp playerBigger
+
+      a:
+        cmp al, "a"
+        je war
+
+        comp al, "j"
         jne playerBigger
 
         inc ebx
