@@ -64,7 +64,7 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 ENDM
 
 display MACRO player, card
-
+  LOCAL lessThanTen, ten, letter, ace, queen, king, jack, class, club, heart, spade, end
   mov edx, player
   call WriteString
   
@@ -137,19 +137,19 @@ display MACRO player, card
       cmp al, "s"
       je spade
 
-      mov edx, diamonds
+      mov edx, OFFSET diamonds
       jmp end
 
     heart:
-        mov edx, hearts
+        mov edx, OFFSET hearts
     club:
-        mov edx, clubs
+        mov edx, OFFSET clubs
     spade:
-        mov edx, spades
+        mov edx, OFFSET spades
 
     end:
       call WriteString
-      crlf
+      call crlf
       
 ENDM
 
@@ -193,7 +193,7 @@ response DWORD ?
 buffer BYTE 50 DUP(?)
 hearts BYTE " of hearts", 0
 spades BYTE "of spades", 0
-diamond BYTE "of diamond",0
+diamonds BYTE "of diamond",0
 clubs BYTE "of clubs",0
 
 
@@ -224,12 +224,12 @@ gameLoop:
   mov esi, OFFSET compDeck                           ;Set compCard
   mov ebx, [esi]
   mov compCard, ebx
-  removeCards computerDeck, 0, compDeckCount        ;Remove card from computer deck
+  removeCards compDeck, 0, compDeckCount        ;Remove card from computer deck
   display cHas, compCard                            ;display the computer card
 
   call compare                                      ;Determine who wins
   call crlf
-  mov edx, nextRound                                  ;Prompt player to see if they want to play the next round
+  mov edx, OFFSET nextRound                                  ;Prompt player to see if they want to play the next round
   call WriteString
   mov edx, OFFSET buffer                              ;Take in input
   call ReadString
@@ -240,18 +240,18 @@ gameLoop:
   ja pWins                                            ;Player wins if its deck has more
   jb cWins                                            ;Computer loses if player deck has less
 
-  mov edx, tGame                                      ;Tie output if decks are the same amount
+  mov edx, OFFSET tGame                                      ;Tie output if decks are the same amount
   call WriteString                                   
   call crlf
   jmp endGame
   
   pWins:                                              ;PLayers wins output
-    mov edx, pGame  
+    mov edx, OFFSET pGame  
     call WriteString
     jmp endGame
 
   cWins:                                               ;computer wins output
-    mov edx, cGame
+    mov edx, OFFSET cGame
     call WriteString
     jmp endGame
 
