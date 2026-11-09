@@ -52,8 +52,8 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
     cmp ecx, size                         ;Check if the current element is the last one
     je stop                               ;If element is the last one on the deck, jmp to stop
 
-    mov card, [esi+4]                    ;Load the next element into card
-    mov [esi], card                      ;Load the next element into the current element
+    mov edx, [esi+4]                    ;Load the next element into card
+    mov [esi], edx                      ;Load the next element into the current element
     add esi, 4                           ;Add to get to the next element
     inc ecx                              ;increase the index we are at
     jmp delete                           ;Jump back to the beginning of the loop
@@ -229,8 +229,10 @@ compare PROC
       mov eax, playerDeckCount
       imul eax, 4
       add esi, eax
-      mov [esi], playerCard
-      mov [esi+4], compCard
+      mov ebx, playerCard
+      mov [esi], ebx
+      mov ebx, compCard
+      mov [esi+4], ebx
       add playerDeckCount, 2
   
       xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
@@ -242,8 +244,10 @@ compare PROC
       mov eax, compDeckCount
       imul eax, 4
       add esi, eax
-      mov [esi], playerCard
-      mov [esi+4], compCard
+      mov ebx, playerCard
+      mov [esi], ebx
+      mov ebx, compCard
+      mov [esi+4], ebx
       add compDeckCount, 2
   
       or eax, 1                                     ;Operation to tell war function computer wins  (ZF = 0)  
@@ -257,8 +261,10 @@ ENDP compare
 
 warDeclared PROC
   mov esi, OFFSET warDeck
-  mov [esi], playerCard
-  mov [esi+4], compCard
+  mov ebx, playerCard
+  mov [esi], ebx
+  mov ebx, compCard
+  mov [esi+4], ebx
   ;Load next 3 cards from playerDeck into warDeck
   mov count, 2
   playerWar:
