@@ -84,7 +84,7 @@ deckCount DWORD 54
 playerDeck BYTE 54*4 DUP(?)
 ; Create list for computer deck
 compDeck BYTE 54*4 DUP(?)
-warDeck BYTE 8*54(?)
+warDeck BYTE 8*54 DUP(?)
 
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
@@ -222,36 +222,36 @@ compare PROC
         jmp playerBigger
         
 
-  playerBigger:
-    mov edx, playerWins
-    call WriteString
-    mov esi, OFFSET playerDeck
-    mov eax, playerDeckCount
-    imul eax, 4
-    add esi, eax
-    mov [esi], playerCard
-    mov [esi+4], compCard
-    add playerDeckCount, 2
-
-    xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
-    jmp endComparison
-  computerBigger:
-    mov edx, compWins
-    call WriteString
-    mov esi, OFFSET compDeck
-    mov eax, compDeckCount
-    imul eax, 4
-    add esi, eax
-    mov [esi], playerCard
-    mov [esi+4], compCard
-    add compDeckCount, 2
-
-    or eax, 1                                     ;Operation to tell war function computer wins  (ZF = 0)  
-    jmp endComparison
-  war:
-    call warDeclared
-  endComparison:
-  RET
+    playerBigger:
+      mov edx, playerWins
+      call WriteString
+      mov esi, OFFSET playerDeck
+      mov eax, playerDeckCount
+      imul eax, 4
+      add esi, eax
+      mov [esi], playerCard
+      mov [esi+4], compCard
+      add playerDeckCount, 2
+  
+      xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
+      jmp endComparison
+    computerBigger:
+      mov edx, compWins
+      call WriteString
+      mov esi, OFFSET compDeck
+      mov eax, compDeckCount
+      imul eax, 4
+      add esi, eax
+      mov [esi], playerCard
+      mov [esi+4], compCard
+      add compDeckCount, 2
+  
+      or eax, 1                                     ;Operation to tell war function computer wins  (ZF = 0)  
+      jmp endComparison
+    war:
+      call warDeclared
+    endComparison:
+    RET
 ENDP compare
 
 
