@@ -231,6 +231,8 @@ compare PROC
     mov [esi], playerCard
     mov [esi+4], compCard
     add playerDeckCount, 2
+
+    xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
     jmp endComparison
   computerWins:
     mov edx, compWins
@@ -242,6 +244,8 @@ compare PROC
     mov [esi], playerCard
     mov [esi+4], compCard
     add compDeckCount, 2
+
+    or eax, 1                                     ;Operation to tell war function computer wins  (ZF = 0)  
     jmp endComparison
   war:
     call warDeclared
@@ -295,7 +299,35 @@ warDeclared PROC
   mov compCard, [ebx]
   removeCards compDeck, 0, compDeckCount
 
-  call compare                                   ;Comparer new cards
+  call compare                                   ;Compare new cards
+  jz playerW
+  jnz compW
+
+  mov count, 0
+  playerW:
+    mov esi, OFFSET playerDeck
+    mov eax, playerDeckCount
+    imul eax, 4
+    add esi, eax
+    add playerDeckCout, 8
+
+  compW:
+    mov esi, OFFSET compDeck
+    mov eax, compDeckCount
+    imul eax, 4
+    add esi, eax
+    add compDeckCount, 8
+
+  add eax, OFFSET warDeck
+  
+  load:
+    mov [esi], [eax]
+    add esi, 4
+    add eax, 4
+    inc count
+    cmp count, 8
+    jl load
+  
   RET
 ENDP warDeclared 
 
