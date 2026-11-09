@@ -147,14 +147,39 @@ compare PROC
   jmp playHasCharacter
 
   playerHasNumber:                                  ;player has card 1-10
-      mov bl, al                                    ;Save first character of playerCard in bl
-      mov eax, OFFSET compCard                      ;Load computer card into eax
-      mov al, [eax]                                 ;Load first character of computer card into al
+      mov ah, al                                    ;Save first character of playerCard in bl
+      mov ebx, OFFSET compCard                      ;Load computer card into eax
+      mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jz bothNumbers                                ;Jump to bothNumbers of both cards are number cards
-      jmp compWins                                  ;Computer wins if it doesn;t have a number card
+      jnz bothNumbers                               ;Computer wins if it doesnt have a number card
 
+      cmp ah, 1                                     ;Check if player has 10
+      je p1                                             ;Jump to p1 if so, else jump to p0
+      jmp p0
+      
+      p0:
+         
+          cmp al, 1                                 ;Check if computer has a 10
+          je compWins                                     ;If so computer wins
+  
+          inc esi                                   ;Go to the next characters
+          inc ebx
+          mov ah, [esi]
+          mov al, [ebx]
+          cmp ah, al                                ;Check which card wins
+          ja playerWins                             ;Player wins if it has the higher card  
+          jb compWins                               ;Computer wins if it has the higher card
+          jmp equal                                 ;Cards are equal, war is called
+
+
+      p1:                                          ;Player has a 10
+        cmp al,1                                   ;Check if computer has a 10
+        jb playerWins                                ;Player wins if computer doesnt have a 10 else, they're equal
+      
+        jmp equals
+          
+        
       
 
   playerHasCharacter:                                
@@ -164,6 +189,8 @@ compare PROC
 
       call IsDigit                                  ;test if computer card is also 1-10
       jz playerWins                                 ;Jump to playerWins of computer card is 1-10
+
+      
 
   playerWins:
 
