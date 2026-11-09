@@ -88,8 +88,8 @@ warDeck BYTE 8*54(?)
 
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
-bPrompt "Ready to play?",0
-nextRound "Type "next" for next round", 0
+bPrompt BYTE "Ready to play?",0
+nextRound BYTE "Type 'next' for next round", 0
 
 placeHolder DWORD 0
 playerDeckCount DWORD 0
@@ -150,14 +150,14 @@ compare PROC
           mov ah, [esi]
           mov al, [ebx]
           cmp ah, al                                ;Check which card wins
-          ja playerWins                             ;Player wins if it has the higher card  
-          jb computerWins                               ;Computer wins if it has the higher card
+          ja playerBigger                             ;Player wins if it has the higher card  
+          jb computerBigger                               ;Computer wins if it has the higher card
           jmp equal                                 ;Cards are equal, war is called
 
 
       p1:                                          ;Player has a 10
         cmp al,1                                   ;Check if computer has a 10
-        jb playerWins                                ;Player wins if computer doesnt have a 10 else, they're equal
+        jb playerBigger                                ;Player wins if computer doesnt have a 10 else, theyre equal
       
         jmp equals
           
@@ -170,7 +170,7 @@ compare PROC
       mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jz playerWins                                 ;Jump to playerWins if computer card is 1-10
+      jz playerBigger                                ;Jump to playerWins if computer card is 1-10
 
       cmp ah, "j"
       je j
@@ -191,9 +191,9 @@ compare PROC
         je war
 
         cmp ah, "o"
-        je playerWins
+        je playerBigger
 
-        jmp comupterWins
+        jmp comupterBigger
 
       q:
         cmp al, "q"
@@ -205,24 +205,24 @@ compare PROC
         inc ebx
         mov al,[ebx]
         cmp al, "o"
-        je computerWins
-        jump playerWins
+        je computerBigger
+        jmp playerBigger
 
       k:
         cmp al, "k"
         je war
     
         cmp al "j"
-        jne playerWins
+        jne playerBigger
 
         inc ebx
         mov al,[ebx]
         cmp al, "o"
-        je computerWins
-        jump playerWins
+        je computerBigger
+        jmp playerBigger
         
 
-  playerWins:
+  playerBigger:
     mov edx, playerWins
     call WriteString
     mov esi, OFFSET playerDeck
@@ -235,7 +235,7 @@ compare PROC
 
     xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
     jmp endComparison
-  computerWins:
+  computerBigger:
     mov edx, compWins
     call WriteString
     mov esi, OFFSET compDeck
