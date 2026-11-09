@@ -63,10 +63,58 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 
 ENDM
 
-display MACRO card, winner
-  
-  
+display MACRO player, card
+  mov esi, OFFSET card
+  mov al, [esi]
+  cmp al, "0"
+  je lessThanTen
 
+  cmp al, "1"
+  je ten
+  jmp letter
+
+  lessThanTen:
+    inc esi
+    mov al, [esi]
+    mov edx, al
+    call WriteString
+    jmp class
+
+  ten:
+    inc esi
+    mov edx, "10"
+    call WriteString
+    jmp class
+
+  letter:
+    cmp al, "q"
+    je queen
+
+    cmp al, "k"
+    je king
+
+    inc esi
+    cmp esi, "o"
+    je jack
+
+    mov edx, "joker"
+    call WriteString
+    jmp end
+
+    queen:
+      mov edx, "queen"
+      call WriteString
+
+    king:
+      mov edx, "king"
+      call WriteString
+
+    jack:
+      mov edx, "jack"
+      callWriteString
+      des esi
+      jmp class
+      
 ENDM
 
 .data
@@ -100,6 +148,10 @@ playerCard DWORD ?
 compCard DWORD ?
 response DWORD ?
 buffer BYTE 50 DUP(?)
+hearts BYTE " of hearts", 0
+spades BYTE "of spades", 0
+diamond BYTE "of diamond",0
+clubs BYTE "of clubs",0
 
 
 .code
@@ -338,5 +390,6 @@ warDeclared PROC
   
   RET
  warDeclared ENDP
+
 
 END main
