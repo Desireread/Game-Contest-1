@@ -71,7 +71,7 @@ ENDM
 
 .data
 ; Create list containing cards
-deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0",
+deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0"
      BYTE "07h0","08h0","09h0","10h0","jh00","qh00","kh00"
      BYTE "0ah0","01d0","02d0","03d0","04d0","05d0","06d0"
      BYTE "07d0","08d0","09d0","10d0","jd00","qd00","kd00"
@@ -126,7 +126,7 @@ compare PROC
   call IsDigit
   jz playerHasNumber
 
-  jmp playHasCharacter
+  jmp playerHasCharacter
 
   playerHasNumber:                                  ;player has card 1-10
       mov ah, al                                    ;Save first character of playerCard in bl
@@ -193,14 +193,14 @@ compare PROC
         cmp ah, "o"
         je playerBigger
 
-        jmp comupterBigger
+        jmp computerBigger
 
       q:
         cmp al, "q"
         je war
 
         cmp al, "k"
-        je computerWins
+        je computerBigger
 
         inc ebx
         mov al,[ebx]
@@ -316,7 +316,7 @@ warDeclared PROC
     mov eax, playerDeckCount
     imul eax, 4
     add esi, eax
-    add playerDeckCout, 8
+    add playerDeckCount, 8
 
   compW:
     mov esi, OFFSET compDeck
