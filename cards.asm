@@ -9,6 +9,54 @@ Include Irvine32.inc
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   LOCAL addCards
+  mov ecx, 0
+  addCards:
+    call Randomize                                  ;Randomly get key of the next address
+    mov eax, deckCount                              
+    call RandomRange
+
+    mov placeHolder, eax                            ;Keep the value fo eax for when the card needs to be deleted
+    imul eax, 3                                     
+    lea edx, deck                                   ;Load the starting address of the random card into edx
+    add edx, eax                                    ;add eax to edx to get the correct starting address of where the card is located in deck
+    
+    mov ebx, deck[edx]                               ;Load the card into ebx
+    
+           
+    removeCards deck, placeHolder                           ;Remove the card from deck
+
+    ;Get the plot of the next address in givenDeck
+    lea edx, givenDeck                ;Load beginning address of givenDeck into edx
+    mov eax, ecx                      ;Space number of key into eax
+    imul eax, 3                       ;Multiply by 3 to account for memory spacing
+    add eax, edx                      ;add beginning address to key value to find starting address of next free space in givenDeck
+    mov givenDeck[eax], ebx           ;Load the random card into givenDeck
+
+    inc ecx                           ;The number of cards in givenDeck has increased                  
+    dec deckCount                     ;The number of cards in deck has decreased
+    cmp ecx, numCards                 ;Check if number of cards in givenDeck has reached the number of cards it needs to load
+    jl addCards                                 ;Repeat loop if not
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   mov ecx, 0                  ;Count number of cards in players deck
   ;mov edx, deckCount                 ;Count number of cards left in regular deck
   lea edx, givenDeck
@@ -85,19 +133,23 @@ deck BYTE "1h",0, "2h",0, "3h",0,"4h",0,"5h",0,"6h",0
      BYTE "8c",0,"9c",0,"10c",0,"jc",0,"qc",0,"kc",0,"ac",0,"1s",0
      BYTE "2s",0,"3s",0,"4s",0,"5s",0,"6s",0,"7s",0,"8s",0,"9s",0
      BYTE "10s",0,"js",0,"qs",0,"ks",0,"as",0
-deckCount DWORD 52
-playerDeck BYTE 52*3 DUP(?)
+     BYTE "jester", 0, "jester", 0
+deckCount DWORD 54
+playerDeck BYTE 54*3 DUP(?)
 ; Create list for computer deck
-compDeck BYTE 52*3 DUP(?)
-cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
-inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
+compDeck BYTE 54*3 DUP(?)
+;cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
+;inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
+
 placeHolder DWORD 0
+playerDeckCount DWORD 0
+compDeckCount DWORD 0
 
 .code
 main PROC
 ;Add a procedure for "I declare war"
-shuffle playerDeck, 25
-shuffle compDeck, 25
+shuffle playerDeck, 26
+shuffle compDeck, 26
 
 
 ;Add a procedure for go fish
@@ -133,5 +185,6 @@ call WriteString
   ;Extra
 ;Procedure for checking a value
 ;checkValue Proc
+  
 main ENDP
 END main
