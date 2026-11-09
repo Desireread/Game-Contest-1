@@ -63,7 +63,8 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 
 ENDM
 
-display MACRO card
+display MACRO card, winner
+  
   
 
 ENDM
@@ -83,12 +84,12 @@ deckCount DWORD 54
 playerDeck BYTE 54*4 DUP(?)
 ; Create list for computer deck
 compDeck BYTE 54*4 DUP(?)
-;cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
-;inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
+warDeck BYTE 8*54(?)
 
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
 bPrompt "Ready to play?",0
+nextRound "Type "next" for next round", 0
 
 placeHolder DWORD 0
 playerDeckCount DWORD 0
@@ -97,6 +98,7 @@ count DWORD 0
 card DWORD ?
 playerCard DWORD ?
 compCard DWORD ?
+
 
 .code
 main PROC
@@ -220,12 +222,21 @@ compare PROC
         
 
   playerWins:
-      
-
+    mov edx, playerWins
+    call WriteString
   computerWins:
-    
-  
+    mov edx, compWins
+    cal WriteString
+  war:
+    call warDeclared
+  endComparison:
   RET
 ENDP compare
+
+
+warDeclared PROC
+
+  RET
+ENDP warDeclared 
 
 END main
