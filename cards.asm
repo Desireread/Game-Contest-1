@@ -78,7 +78,7 @@ deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0",
      BYTE "08c0","09c0","10c0","jc00","qc00","kc00","ac00","01s0"
      BYTE "02s0","03s0","04s0","05s0","06s0","07s0","08s0","09s0"     
      BYTE "10s0","js00","qs00","ks00","as00"
-     BYTE "jes0","jes0"
+     BYTE "jok0","jok0"
 deckCount DWORD 54
 playerDeck BYTE 54*4 DUP(?)
 ; Create list for computer deck
@@ -113,27 +113,6 @@ call WriteString
 
 
 
-
-
-;Computer either hadns over cards or says go fish
-  ;Function checks all elements in computer deck and hands over cards or says go fish
-  ;After function, the cards the player recieves is displayed
-  ;Player can check for a match of 4
-    ;if match is found, player point increases
-
-;Compuetr's turn to play
-    ;Random number from compDecks size if chose
-    ;Computer asks for number/letter
-    ;If player has matching cards, those cards will be surrenedered to computer's deck
-      ;This transaction will be displayed
-    ;Computers deck will be checked for macthes of 4
-      ;If match is found, computer point increases
-
-;Add a procedure for blackjack
-  ;Extra
-;Procedure for checking a value
-;checkValue Proc
-  
 main ENDP
 
 ;Zero flag is set if player wins, cleard if computer wins
@@ -152,8 +131,8 @@ compare PROC
       mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jnz bothNumbers                               ;Computer wins if it doesnt have a number card
-
+      jnz computerWins                               ;Computer wins if it doesnt have a number card
+      
       cmp ah, 1                                     ;Check if player has 10
       je p1                                             ;Jump to p1 if so, else jump to p0
       jmp p0
@@ -161,7 +140,7 @@ compare PROC
       p0:
          
           cmp al, 1                                 ;Check if computer has a 10
-          je compWins                                     ;If so computer wins
+          je computerWins                                     ;If so computer wins
   
           inc esi                                   ;Go to the next characters
           inc ebx
@@ -169,7 +148,7 @@ compare PROC
           mov al, [ebx]
           cmp ah, al                                ;Check which card wins
           ja playerWins                             ;Player wins if it has the higher card  
-          jb compWins                               ;Computer wins if it has the higher card
+          jb computerWins                               ;Computer wins if it has the higher card
           jmp equal                                 ;Cards are equal, war is called
 
 
@@ -183,17 +162,65 @@ compare PROC
       
 
   playerHasCharacter:                                
-      mov bl, al                                    ;Save first character of playerCard in bl
-      mov eax, OFFSET compCard                      ;Load computer card into eax
-      mov al, [eax]                                 ;Load first character of computer card into al
+      mov ah, al                                    ;Save first character of playerCard in ah
+      mov ebx, OFFSET compCard                      ;Load computer card into eax
+      mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jz playerWins                                 ;Jump to playerWins of computer card is 1-10
+      jz playerWins                                 ;Jump to playerWins if computer card is 1-10
 
+      cmp ah, "j"
+      je j
+
+      cmp ah, "q"
+      je q
+
+      cmp ah, "k"
+      je k
       
+      j:
+        cmp al, "j"
+        inc esi
+        inc ebx
+        mov ah,[esi]
+        mov al, [ebx]
+        cmp ah, al  
+        je war
+
+        cmp ah, "o"
+        je playerWins
+
+        jmp comupterWins
+
+      q:
+        cmp al, "q"
+        je war
+
+        cmp al, "k"
+        je computerWins
+
+        inc ebx
+        mov al,[ebx]
+        cmp al, "o"
+        je computerWins
+        jump playerWins
+
+      k:
+        cmp al, "k"
+        je war
+    
+        cmp al "j"
+        jne playerWins
+
+        inc ebx
+        mov al,[ebx]
+        cmp al, "o"
+        je computerWins
+        jump playerWins
+        
 
   playerWins:
-
+      
 
   computerWins:
     
