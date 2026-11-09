@@ -101,29 +101,29 @@ display MACRO player, card
     je king
 
     inc esi
-    cmp esi, "o"
+    cmp BYTE PTR [esi], "o"
     je jack
 
 
-    mov edx, "joker"
+    mov edx, OFFSET jokerOutput
     jmp end
 
     ace:
-      mov edx, "ace"
+      mov edx, OFFSET aceOutput
       call WriteString
       jmp class
     queen:
-      mov edx, "queen"
+      mov edx, OFFSET queenOutput
       call WriteString
       jmp class
     king:
-      mov edx, "king"
+      mov edx, OFFSET kingOutput
       call WriteString
       jmp class
 
     jack:
-      mov edx, "jack"
-      callWriteString
+      mov edx, OFFSET jackOutput
+      call WriteString
       dec esi
       jmp class
 
@@ -186,6 +186,14 @@ tGame BYTE "It's a tie!",0
 pHas BYTE "Player has ", 0
 cHas BYTE "Computer has ",0
 
+tenOutput BYTE "10", 0
+aceOutput BYTE "ace", 0
+queenOutput BYTE "queen", 0
+kingOutput BYTE "king", 0
+jackOutput BYTE "jack", 0
+jokerOutput BYTE "joker", 0
+
+
 placeHolder DWORD 0
 playerDeckCount DWORD 0
 compDeckCount DWORD 0
@@ -223,14 +231,14 @@ gameLoop:
   mov ebx, [esi]
   mov playerCard, ebx                                  
   removeCards playerDeck, 0, playerDeckCount           ;Remove card from player deck
-  dec playerCardCount
+  dec playerDeckCount
   display pHas, playerCard                             ;display player card
 
   mov esi, OFFSET compDeck                           ;Set compCard
   mov ebx, [esi]
   mov compCard, ebx
   removeCards compDeck, 0, compDeckCount        ;Remove card from computer deck
-  dec compCardCount
+  dec compDeckCount
   display cHas, compCard                            ;display the computer card
 
   call compare                                      ;Determine who wins
@@ -239,7 +247,7 @@ gameLoop:
   call WriteString
   mov edx, OFFSET buffer                              ;Take in input
   call ReadString
-  cmp edx, "Y"
+  cmp BYTE PTR [buffer], "Y"
   je gameLoop                                         ;Jmp to beginning of loop of player wants to continue game
   
   cmp playerDeckCount, compDeckCount                  ;Check which deck has more cards
