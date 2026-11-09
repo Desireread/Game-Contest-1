@@ -21,9 +21,11 @@ shuffle MACRO givenDeck, numCards
     mov esi, OFFSET deck                           ;Load the first byte of deck into esi (pg. 118)
     add esi, eax                                   ;Add the index of the random card to eax to get the proper address
     mov ebx, [esi]                                 ;Load the card into ebx
-           
+  
+    mov ecx, count                                   ;Save ecx in count
     removeCards deck, placeHolder                           ;Remove the card from deck
 
+    mov count, ecx
     mov esi, OFFSET givenDeck                               ;Load the address of the first byte of givenDeck into esi
     mov eax, ecx                                            ;Load the index the random card needs to be inserted at into eax
     imul eax, 4                                             ;Multiply eax by 4 to get the starting byte address 
@@ -40,18 +42,27 @@ ENDM
 ;Macro to delete a card from a deck
 removeCards MACRO givenDeck, addr        ;Define the macro
   LOCAL delete, stop
-  mov ecx, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
-  mov eax, addr                          ;Assign the starting address to eax
-  lea edx, givenDeck
+  mov esi, OFFSET givenDeck              ;Load the first byte address of givenDeck
+  mov eax, addr
+  imul eax, 4
+  add esi, eax                           ;Get the first byte address of teh starting index
+
+  mov eax, LENGTHOF givenDeck            ;Assign the length of the given deck to ecx
+  shr eax, 2                             ;Get the number of elements in eax
+  mov ecx, addr
   delete: 
-    cmp eax, ecx                         ;Check if the given address is the last element
-    je stop                               ;If element is the last one on the deck, jmp to end
-    mov ebx, givenDeck[edx+(eax+1)*3]        ;Assign the value of the next element in the givenDeck to ebx
-    mov givenDeck[edx+eax*3], ebx            ;Move the next element to the current position
-    inc eax                              ;increment eax to the next position
+    cmp ecx, eax                         ;Check if the given address is the last element
+    je stop                               ;If element is the last one on the deck, jmp to stop
+
+    mov card, [esi+4]                    ;Load the next element into card
+    mov [esi], card                      ;Load the next element into the current element
+    add esi, 4                           ;Add to get to the next element
+    inc ecx                              ;increase the index we are at
     jmp delete                           ;Jump back to the beginning of the loop
+
   stop:
-    mov givenDeck[edx+eax*3], " "            ;Assign an empty value to the last element
+    mov DWORD PTR [esi], 0           ;Assign an empty value to the last element
+
 ENDM
 
 
@@ -68,15 +79,17 @@ deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0",
      BYTE "10s0","js00","qs00","ks00","as00"
      BYTE "jes0","jes0"
 deckCount DWORD 54
-playerDeck BYTE 54*3 DUP(?)
+playerDeck BYTE 54*4 DUP(?)
 ; Create list for computer deck
-compDeck BYTE 54*3 DUP(?)
+compDeck BYTE 54*4 DUP(?)
 ;cardSearch BYTE "What number do you want to look for?", 0             ;Prompt for GOFish player
 ;inputReminder BYTE "Input format: 1-9 for a number; jack = j, queen = q, king = k, ace = a", 0
 
 placeHolder DWORD 0
 playerDeckCount DWORD 0
 compDeckCount DWORD 0
+count DWORD 0
+card DWORD ?
 
 .code
 main PROC
