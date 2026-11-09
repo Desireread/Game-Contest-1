@@ -65,7 +65,7 @@ ENDM
 
 display MACRO player, card
   LOCAL lessThanTen, ten, letter, ace, queen, king, jack, class, club, heart, spade, end
-  mov edx, player
+  mov edx, OFFSET player
   call WriteString
   
   mov esi, OFFSET card
@@ -81,7 +81,7 @@ display MACRO player, card
     inc esi
     mov al, [esi]
     mov edx, al
-    call WriteString
+    call WriteChar
     jmp class
 
   ten:
@@ -91,7 +91,7 @@ display MACRO player, card
     jmp class
 
   letter:
-    cmp "a"
+    cmp al, "a"
     je ace
     
     cmp al, "q"
@@ -111,13 +111,15 @@ display MACRO player, card
     ace:
       mov edx, "ace"
       call WriteString
+      jmp class
     queen:
       mov edx, "queen"
       call WriteString
-
+      jmp class
     king:
       mov edx, "king"
       call WriteString
+      jmp class
 
     jack:
       mov edx, "jack"
@@ -142,11 +144,13 @@ display MACRO player, card
 
     heart:
         mov edx, OFFSET hearts
+        jmp end
     club:
         mov edx, OFFSET clubs
+        jmp end
     spade:
         mov edx, OFFSET spades
-
+        jmp end
     end:
       call WriteString
       call crlf
@@ -209,8 +213,8 @@ call WriteString
 mov edx, OFFSET buffer
 call ReadString
 
-cmp edx, "Y"
-je playGame
+cmp BYTE PTR [buffer], "Y"
+je gameLoop
 jmp endGame
 
 gameLoop:
@@ -219,12 +223,14 @@ gameLoop:
   mov ebx, [esi]
   mov playerCard, ebx                                  
   removeCards playerDeck, 0, playerDeckCount           ;Remove card from player deck
+  dec playerCardCount
   display pHas, playerCard                             ;display player card
 
   mov esi, OFFSET compDeck                           ;Set compCard
   mov ebx, [esi]
   mov compCard, ebx
   removeCards compDeck, 0, compDeckCount        ;Remove card from computer deck
+  dec compCardCount
   display cHas, compCard                            ;display the computer card
 
   call compare                                      ;Determine who wins
