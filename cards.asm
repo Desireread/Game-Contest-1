@@ -8,7 +8,7 @@ Include Irvine32.inc
 
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
-  LOCAL addCards
+  LOCAL addCards                                  ;Searched  "how to use loops inside of a macro irvine"
   mov ecx, 0                                      ;Start at 0 cards in the deck
   call Randomize                                  ;Randomly get key of the next address (Pg.164)
   addCards:
@@ -65,93 +65,98 @@ ENDM
 
 display MACRO player, card
   LOCAL lessThanTen, ten, letter, ace, queen, king, jack, class, club, heart, spade, end
-  mov edx, OFFSET player
+  mov edx, OFFSET player             ;Print out which player we are displaying the card for
   call WriteString
   
-  mov esi, OFFSET card
+  mov esi, OFFSET card               ;Load the card address into esi
   mov al, [esi]
-  cmp al, "0"
+  cmp al, "0"                        ;Check if the card is 1-9
   je lessThanTen
 
-  cmp al, "1"
+  cmp al, "1"                        ;Check if card is 10
   je ten
-  jmp letter
-
-  lessThanTen:
-    inc esi
+  jmp letter                         ;Card is letter otherwise
+  
+  lessThanTen:  
+    inc esi                          ;increase esi to read the number
     mov al, [esi]
-    call WriteChar
-    jmp class
+    call WriteChar                   ;print the number to the screen
+    jmp class                        ;Jump to determine class
 
   ten:
-    inc esi
-    mov edx, OFFSET tenOutput
-    call WriteString
-    jmp class
+    inc esi                          ;increase esi to start at class
+    mov edx, OFFSET tenOutput        
+    call WriteString                 ;Print ten to screen
+    jmp class                        ;Jump to determine class
 
-  letter:
-    cmp al, "a"
+  letter:                             
+    cmp al, "a"                      ;Check if card is ace
     je ace
     
-    cmp al, "q"
+    cmp al, "q"                      ;Cehck if card is queen
     je queen
 
-    cmp al, "k"
+    cmp al, "k"                      ;Check if card is king
     je king
 
-    inc esi
+    inc esi                          ;Mov esi pointer to next char to determine if it is joker or jack
     cmp BYTE PTR [esi], "o"
-    jne jack
+    jne jack                         
 
 
-    mov edx, OFFSET jokerOutput
-    jmp end
+    mov edx, OFFSET jokerOutput      ;Output jokerOutput
+    jmp end                          ;Jump to end
 
     ace:
-      mov edx, OFFSET aceOutput
+      mov edx, OFFSET aceOutput      ;output ace
       call WriteString
       jmp class
+
     queen:
-      mov edx, OFFSET queenOutput
+      mov edx, OFFSET queenOutput    ;output queen
       call WriteString
       jmp class
-    king:
-      mov edx, OFFSET kingOutput
+
+    king:  
+      mov edx, OFFSET kingOutput     ;output king
       call WriteString
       jmp class
 
     jack:
-      mov edx, OFFSET jackOutput
+      mov edx, OFFSET jackOutput    ;output jack
       call WriteString
-      dec esi
-      jmp class
+      dec esi                       ;decrease esi to check class
+      jmp class                     
 
     class:
-      inc esi
+      inc esi                       ;increase esi to check class
       mov al, [esi]
-      cmp al, "h"
+      cmp al, "h"                   ;Check if card is heart
       je heart
-
-      cmp al, "c"
+  
+      cmp al, "c"                   ;Check if card is club
       je club
 
-      cmp al, "s"
+      cmp al, "s"                   ;Check if card is spade
       je spade
 
-      mov edx, OFFSET diamonds
+      mov edx, OFFSET diamonds      ;Card is diamond
       jmp end
 
     heart:
-        mov edx, OFFSET hearts
+        mov edx, OFFSET hearts      ;Card is heart
         jmp end
+
     club:
-        mov edx, OFFSET clubs
+        mov edx, OFFSET clubs       ;Card is clubs
         jmp end
+
     spade:
-        mov edx, OFFSET spades
+        mov edx, OFFSET spades      ;Card is spades
         jmp end
+
     end:
-      call WriteString
+      call WriteString              ;Print out card class
       call crlf
       
 ENDM
@@ -176,7 +181,7 @@ warDeck BYTE 8*4 DUP(?)
 playerWins BYTE "You have won this round!",0
 compWins BYTE "Computer has won this round!",0
 bPrompt BYTE "Ready to play (Y/N)? ",0
-nextRound BYTE "Type 'Y' for next round", 0
+nextRound BYTE "Play another round (Y/N)? ", 0
 
 pGame BYTE "Player wins the game!", 0
 cGame BYTE "Computer wins the game!",0
@@ -209,11 +214,12 @@ clubs BYTE " of clubs",0
 
 
 .code
+;_________________________________START_________________________________________________________
 main PROC
-;Add a procedure for "I declare war"
-  shuffle playerDeck, 26
-  shuffle compDeck, 26
-  mov playerDeckCount, 26
+  shuffle playerDeck, 26                           ;Shuffle 26 cards into playerDeck         
+  shuffle compDeck, 26                             ;Shuffle 26 cards into computer deck
+  
+  mov playerDeckCount, 26                          ;Set playerCount to 26
   mov compDeckCount, 26
 
 ;Player types in whether to play
