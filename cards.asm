@@ -280,16 +280,17 @@ gameLoop:
 endGame:
   exit
 main ENDP
+;_________________________________________________________end main___________________________________________________
 
-;Zero flag is set if player wins, cleard if computer wins
+;Zero flag is set if player wins, cleared if computer wins
 compare PROC
-  mov esi, OFFSET playerCard
+  mov esi, OFFSET playerCard                      ;Load player card
   mov al, [esi]
 
-  call IsDigit
-  jz playerHasNumber
+  call IsDigit                                    ;Check if playerCard is 1-10
+  jz playerHasNumber  
 
-  jmp playerHasCharacter
+  jmp playerHasCharacter                          ;Else playercard is above 10
 
   playerHasNumber:                                  ;player has card 1-10
       mov ah, al                                    ;Save first character of playerCard in bl
@@ -333,7 +334,7 @@ compare PROC
       mov al, [ebx]                                 ;Load first character of computer card into al
 
       call IsDigit                                  ;test if computer card is also 1-10
-      jz playerBigger                                ;Jump to playerWins if computer card is 1-10
+      jz playerBigger                               ;Jump to playerWins if computer card is 1-10
 
       cmp ah, "j"
       je j
@@ -347,7 +348,7 @@ compare PROC
       cmp ah, "a"
       je a
       
-      j:
+      j:                          ;Player could be joker or jack
         cmp al, "j"
         inc esi
         inc ebx
@@ -356,86 +357,86 @@ compare PROC
         cmp ah, al  
         je war
 
-        cmp ah, "o"
-        je playerBigger
+        cmp ah, "o"                  ;Test if player is joker
+        je playerBigger              ;if so, player wins
 
         jmp computerBigger
 
       q:
-        cmp al, "q"
+        cmp al, "q"                  ;Test if computer is also a queen
         je war
 
-        cmp al, "k"
+        cmp al, "k"                  ;computer wins if it is king or ace (k>q, a)
         je computerBigger
 
-        cmp al, "a"
+        cmp al, "a"                
         je computerBigger
 
-        inc ebx
+        inc ebx                      ;Test if computer is a joker
         mov al,[ebx]
         cmp al, "o"
-        je computerBigger
+        je computerBigger            ;if so, computer wins
         jmp playerBigger
 
       k:
-        cmp al, "k"
+        cmp al, "k"                      ;test if computer is also king
         je war
 
-        cmp al, "a"
+        cmp al, "a"                      ;Test is computer is bigger
         je computerBigger
         cmp al, "j"
         jne playerBigger
 
        
 
-        inc ebx
-        mov al,[ebx]
+        inc ebx                         ;Test if computer is joker
+        mov al,[ebx]  
         cmp al, "o"
         je computerBigger
         jmp playerBigger
 
       a:
-        cmp al, "a"
+        cmp al, "a"                    ;Test if computer is also ace
         je war
 
-        cmp al, "j"
+        cmp al, "j"                    ;Test if computer might be joker
         jne playerBigger
 
-        inc ebx
+        inc ebx                        ;Test if computer is joker
         mov al,[ebx]
         cmp al, "o"
         je computerBigger
         jmp playerBigger
         
 
-    playerBigger:
-      mov edx, OFFSET playerWins
+    playerBigger:                    
+      mov edx, OFFSET playerWins              ;Print player wins to concole
       call WriteString
       mov esi, OFFSET playerDeck
-      mov eax, playerDeckCount
+      mov eax, playerDeckCount                ;Load cards into playerDeck
       imul eax, 4
       add esi, eax
       mov ebx, playerCard
       mov [esi], ebx
       mov ebx, compCard
       mov [esi+4], ebx
-      add playerDeckCount, 2
+      add playerDeckCount, 2                  ;increase playerDeck size
   
       xor eax,eax                                    ;Operation to tell war function player wins (ZF =1)
       jmp endComparison
     computerBigger:
-      mov edx, OFFSET compWins
+      mov edx, OFFSET compWins                        ;Print computer wins
       call WriteString
-      mov esi, OFFSET compDeck
+      mov esi, OFFSET compDeck                        ;Add cards to cmoputer deck
       mov eax, compDeckCount
       imul eax, 4
       add esi, eax
-      mov ebx, playerCard
+      mov ebx, playerCard  
       mov [esi], ebx
       mov ebx, compCard
       mov [esi+4], ebx
-      add compDeckCount, 2
-  
+      add compDeckCount, 2                           ;increase computer deck count size
+    
       or eax, 1                                     ;Operation to tell war function computer wins  (ZF = 0)  
       jmp endComparison
     war:
@@ -498,24 +499,24 @@ warDeclared PROC
 
   mov count, 0
   playerW:
-    mov esi, OFFSET playerDeck
+    mov esi, OFFSET playerDeck                  ;Load playerDeck address into esi
     mov eax, playerDeckCount
-    imul eax, 4
+    imul eax, 4                                 ;Point to first empty slot
     add esi, eax
-    add playerDeckCount, 8
+    add playerDeckCount, 8                      ;Update playerDeckCount
     jmp load
 
   compW:
-    mov esi, OFFSET compDeck
+    mov esi, OFFSET compDeck                    ;Load compDeck address into esi
     mov eax, compDeckCount
     imul eax, 4
-    add esi, eax
-    add compDeckCount, 8
+    add esi, eax                                ;Point to first empty slot
+    add compDeckCount, 8                        ;update size of compDeck
 
   add eax, OFFSET warDeck
   
-  load:
-    mov ebx, [eax]
+  load:        
+    mov ebx, [eax]                              ;Load cards from war deck into winner deck
     mov [esi], ebx
     add esi, 4
     add eax, 4
