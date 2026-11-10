@@ -2,13 +2,13 @@
 
 ## How to use
 
-###1. Download cards.asm
+### 1. Download cards.asm
 
-##2. Run in Visual Studio
+## 2. Run in Visual Studio
 
-##3. Follow prompts
+## 3. Follow prompts
 
-##Sources
+## Sources
 
 https://broman.dev/download/Assembly%20Language%20for%20x86%20Processors%207th%20Edition.pdf
 
