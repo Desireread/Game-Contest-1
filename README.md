@@ -2,11 +2,11 @@
 
 ## How to use
 
-### 1. Download cards.asm
-
-## 2. Run in Visual Studio
-
-## 3. Follow prompts
+1. Download repository
+2. Run Project.sln in Visual Studio
+3. Pull up cards.asm
+4. Run debugger
+5. Follow prompts
 
 ## Sources
 
