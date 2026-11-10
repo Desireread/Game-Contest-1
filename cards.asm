@@ -223,19 +223,19 @@ main PROC
   mov compDeckCount, 26
 
 ;Player types in whether to play
-mov edx, OFFSET bPrompt
+mov edx, OFFSET bPrompt                            ;Prompt user to see if they want to play
 call WriteString
-mov edx, OFFSET buffer
+mov edx, OFFSET buffer                             ;Intake user answer
 call ReadString
 
-cmp BYTE PTR [buffer], "Y"
+cmp BYTE PTR [buffer], "Y"                         ;Check if user wants to play
 je gameLoop
 jmp endGame
 
 gameLoop:
   call crlf
   mov esi, OFFSET playerDeck                           ;Set playerCard
-  mov ebx, [esi]
+  mov ebx, [esi]                                     
   mov playerCard, ebx                                  
   removeCards playerDeck, 0, playerDeckCount           ;Remove card from player deck
   dec playerDeckCount
