@@ -12,5 +12,5 @@
 
 https://broman.dev/download/Assembly%20Language%20for%20x86%20Processors%207th%20Edition.pdf
 
-Google: Typed "How to use 
+Google: Typed "how to use loops inside of a macro irvine"
 
