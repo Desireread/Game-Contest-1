@@ -22,10 +22,10 @@ shuffle MACRO givenDeck, numCards
     add esi, eax                                   ;Add the index of the random card to eax to get the proper address
     mov ebx, [esi]                                 ;Load the card into ebx
   
-    mov ecx, count                                   ;Save ecx in count
+    mov count, ecx                                   ;Save ecx in count
     removeCards deck, placeHolder, deckCount                           ;Remove the card from deck
 
-    mov count, ecx
+    mov ecx, count
     mov esi, OFFSET givenDeck                               ;Load the address of the first byte of givenDeck into esi
     mov eax, ecx                                            ;Load the index the random card needs to be inserted at into eax
     imul eax, 4                                             ;Multiply eax by 4 to get the starting byte address 
@@ -203,9 +203,9 @@ compCard DWORD ?
 response DWORD ?
 buffer BYTE 50 DUP(?)
 hearts BYTE " of hearts", 0
-spades BYTE "of spades", 0
-diamonds BYTE "of diamond",0
-clubs BYTE "of clubs",0
+spades BYTE " of spades", 0
+diamonds BYTE " of diamond",0
+clubs BYTE " of clubs",0
 
 
 .code
