@@ -214,6 +214,8 @@ main PROC
 ;Add a procedure for "I declare war"
   shuffle playerDeck, 26
   shuffle compDeck, 26
+  mov playerDeckCount, 26
+  mov compDeckCount, 26
 
 ;Player types in whether to play
 mov edx, OFFSET bPrompt
@@ -270,7 +272,7 @@ gameLoop:
     jmp endGame
 
 endGame:
-
+  exit
 main ENDP
 
 ;Zero flag is set if player wins, cleard if computer wins
@@ -495,6 +497,7 @@ warDeclared PROC
     imul eax, 4
     add esi, eax
     add playerDeckCount, 8
+    jmp load
 
   compW:
     mov esi, OFFSET compDeck
