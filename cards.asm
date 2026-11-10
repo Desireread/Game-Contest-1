@@ -80,13 +80,12 @@ display MACRO player, card
   lessThanTen:
     inc esi
     mov al, [esi]
-    mov edx, al
     call WriteChar
     jmp class
 
   ten:
     inc esi
-    mov edx, "10"
+    mov edx, OFFSET tenOutput
     call WriteString
     jmp class
 
@@ -102,7 +101,7 @@ display MACRO player, card
 
     inc esi
     cmp BYTE PTR [esi], "o"
-    je jack
+    jne jack
 
 
     mov edx, OFFSET jokerOutput
@@ -251,8 +250,9 @@ gameLoop:
   call ReadString
   cmp BYTE PTR [buffer], "Y"
   je gameLoop                                         ;Jmp to beginning of loop of player wants to continue game
-  
-  cmp playerDeckCount, compDeckCount                  ;Check which deck has more cards
+
+  mov ebx, compDeckCount
+  cmp playerDeckCount, ebx                  ;Check which deck has more cards
   ja pWins                                            ;Player wins if its deck has more
   jb cWins                                            ;Computer loses if player deck has less
 
