@@ -5,7 +5,7 @@
 .model flat, stdcall
 Include Irvine32.inc
 
-
+;__________________________________________SHUFFLE____________________________________________
 ;Macro to randomly assign nunCards amount of cards to a given deck
 shuffle MACRO givenDeck, numCards
   LOCAL addCards                                  ;Searched  "how to use loops inside of a macro irvine"
@@ -39,6 +39,7 @@ shuffle MACRO givenDeck, numCards
     
 ENDM
 
+;_______________________________________REMOVECARDS__________________________________________________________
 ;Macro to delete a card from a deck
 removeCards MACRO givenDeck, addr, size        ;Define the macro
   LOCAL delete, stop
@@ -63,6 +64,7 @@ removeCards MACRO givenDeck, addr, size        ;Define the macro
 
 ENDM
 
+;________________________________DISPLAY_________________________________________________
 display MACRO player, card
   LOCAL lessThanTen, ten, letter, ace, queen, king, jack, class, club, heart, spade, end
   mov edx, OFFSET player             ;Print out which player we are displaying the card for
@@ -161,6 +163,8 @@ display MACRO player, card
       
 ENDM
 
+
+;___________________________________________DATA________________________________________________
 .data
 ; Create list containing cards
 deck BYTE "01h0","02h0","03h0","04h0","05h0","06h0"
@@ -280,8 +284,10 @@ gameLoop:
 endGame:
   exit
 main ENDP
-;_________________________________________________________end main___________________________________________________
 
+
+
+;_________________________________________________________COMPARE___________________________________________________
 ;Zero flag is set if player wins, cleared if computer wins
 compare PROC
   mov esi, OFFSET playerCard                      ;Load player card
@@ -408,7 +414,7 @@ compare PROC
         je computerBigger
         jmp playerBigger
         
-
+    
     playerBigger:                    
       mov edx, OFFSET playerWins              ;Print player wins to concole
       call WriteString
@@ -445,7 +451,7 @@ compare PROC
     RET
 compare ENDP 
 
-
+;___________________________________________WARDECLARED___________________________________________________
 warDeclared PROC
   mov esi, OFFSET warDeck
   mov ebx, playerCard
