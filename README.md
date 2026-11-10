@@ -6,7 +6,8 @@
 2. Run Project.sln in Visual Studio
 3. Pull up cards.asm
 4. Run debugger
-5. Follow prompts
+   [Running debugger](/start_debugging.png)
+6. Follow prompts
 
 ## Sources
 
